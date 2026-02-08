@@ -1,7 +1,6 @@
 import time
 import streamlit as st
 
-
 # ----------------------------
 # Page settings
 # ----------------------------
@@ -11,170 +10,159 @@ st.set_page_config(
     layout="centered",
 )
 
-
 # ----------------------------
-# Custom CSS (Pharma look + colors + loader)
+# Pharma UI CSS + small loader
 # ----------------------------
 st.markdown(
     """
     <style>
-      /* Background */
+      /* App background */
       .stApp {
-        background: radial-gradient(circle at 20% 10%, rgba(75, 156, 221, 0.18), transparent 35%),
-                    radial-gradient(circle at 85% 35%, rgba(134, 206, 245, 0.22), transparent 40%),
-                    linear-gradient(180deg, #F6FAFF 0%, #FFFFFF 55%, #F6FAFF 100%);
+        background: linear-gradient(180deg, #F3F8FF 0%, #FFFFFF 55%, #F3F8FF 100%);
       }
 
-      /* Reduce top padding */
-      .block-container { padding-top: 1.1rem; padding-bottom: 2.5rem; max-width: 720px; }
+      /* Page spacing */
+      .block-container { padding-top: 1.2rem; padding-bottom: 2.5rem; max-width: 720px; }
 
-      /* Pharma card */
+      /* Card */
       .card {
         background: rgba(255,255,255,0.92);
         border: 1px solid rgba(15, 23, 42, 0.08);
         border-radius: 18px;
-        padding: 16px 16px 12px 16px;
-        box-shadow: 0 14px 32px rgba(2, 8, 23, 0.10);
+        padding: 18px;
+        box-shadow: 0 14px 32px rgba(2, 8, 23, 0.08);
         margin-bottom: 14px;
         backdrop-filter: blur(6px);
       }
 
       /* Header */
-      .header-card{
-        background: rgba(255,255,255,0.88);
-        border: 1px solid rgba(15, 23, 42, 0.06);
-        border-radius: 18px;
-        padding: 14px 16px;
-        box-shadow: 0 14px 32px rgba(2, 8, 23, 0.10);
-        margin-bottom: 14px;
-      }
-      .header-wrap{
-        display:flex;
-        align-items:center;
-        gap:14px;
-      }
+      .header-row { display:flex; align-items:center; gap:14px; }
       .brand-title{
-        font-size: 30px;
-        font-weight: 850;
-        color: #0F172A;
-        line-height: 1.1;
-        margin:0;
+        font-size: 34px; font-weight: 900; color:#0F172A;
+        margin:0; line-height: 1.05;
       }
       .brand-subtitle{
-        font-size: 13px;
-        color: rgba(15, 23, 42, 0.62);
-        margin-top: 3px;
-        margin-bottom: 0;
+        font-size: 14px; color: rgba(15,23,42,0.65);
+        margin-top: 4px;
       }
 
       /* Section title */
       .section-title{
-        font-size: 16px;
-        font-weight: 750;
-        color: #0F172A;
+        font-size: 18px; font-weight: 800; color:#0F172A;
         margin: 0 0 10px 0;
-        display:flex;
-        gap:8px;
-        align-items:center;
+        display:flex; align-items:center; gap:10px;
       }
-      .pill{
-        display:inline-block;
-        padding: 2px 10px;
+      .badge{
+        display:inline-flex;
+        padding: 5px 10px;
         border-radius: 999px;
-        background: rgba(59,130,246,0.10);
-        border: 1px solid rgba(59,130,246,0.18);
-        color: rgba(15,23,42,0.75);
         font-size: 12px;
-        font-weight: 650;
+        font-weight: 700;
+        background: rgba(0, 122, 255, 0.10);
+        border: 1px solid rgba(0, 122, 255, 0.18);
+        color: rgba(15,23,42,0.75);
       }
 
-      /* Results */
-      .result-grid{
-        display:grid;
-        grid-template-columns: 1fr;
-        gap:10px;
-        margin-top: 4px;
-      }
+      /* Result blocks */
+      .result-grid{ display:grid; grid-template-columns: 1fr; gap:10px; margin-top: 6px; }
       .result-item{
         padding: 12px 14px;
         border-radius: 14px;
-        background: rgba(59, 130, 246, 0.08);
-        border: 1px solid rgba(59, 130, 246, 0.18);
+        background: rgba(0, 122, 255, 0.08);
+        border: 1px solid rgba(0, 122, 255, 0.18);
+        display:flex; align-items:center; justify-content:space-between;
       }
-      .result-label{
-        font-size: 12px;
-        color: rgba(15, 23, 42, 0.70);
-        margin:0;
+      .result-left{ display:flex; align-items:center; gap:10px; }
+      .chip{
+        width: 24px; height: 24px;
+        border-radius: 8px;
+        background: rgba(0, 122, 255, 0.18);
+        display:flex; align-items:center; justify-content:center;
+        font-weight: 900;
+        color: rgba(15,23,42,0.75);
       }
-      .result-value{
-        font-size: 22px;
-        font-weight: 850;
-        color: #0F172A;
-        margin: 2px 0 0 0;
-      }
+      .result-label{ font-size: 14px; color: rgba(15,23,42,0.78); margin:0; font-weight: 700; }
+      .result-value{ font-size: 22px; font-weight: 900; color:#0F172A; margin:0; }
 
-      /* Footer note */
+      /* Note */
       .note{
         font-size: 12px;
-        color: rgba(15, 23, 42, 0.55);
+        color: rgba(15,23,42,0.55);
         margin-top: 10px;
       }
 
-      /* Small loader (animation) */
-      .loader-wrap{ display:flex; align-items:center; gap:10px; margin: 6px 0 6px 0; }
-      .dot {
-        width: 8px; height: 8px; border-radius: 50%;
-        background: rgba(59,130,246,0.75);
-        animation: bounce 1.1s infinite ease-in-out;
+      /* Optional tiny top loader bar */
+      .top-loader {
+        height: 4px;
+        width: 100%;
+        border-radius: 999px;
+        background: rgba(0, 122, 255, 0.10);
+        overflow: hidden;
+        margin-bottom: 12px;
       }
-      .dot:nth-child(2){ animation-delay: 0.15s; opacity: 0.8; }
-      .dot:nth-child(3){ animation-delay: 0.30s; opacity: 0.65; }
-      @keyframes bounce {
-        0%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-7px); }
+      .top-loader > div {
+        height: 100%;
+        width: 35%;
+        background: rgba(0, 122, 255, 0.55);
+        border-radius: 999px;
+        animation: slide 1.2s infinite ease-in-out;
       }
-      .loading-text{ font-size: 12px; color: rgba(15,23,42,0.55); }
+      @keyframes slide {
+        0% { transform: translateX(-60%); }
+        50% { transform: translateX(180%); }
+        100% { transform: translateX(-60%); }
+      }
+
+      /* Make Streamlit button look more "pharma" */
+      div.stButton > button {
+        width: 100%;
+        border-radius: 14px;
+        padding: 10px 14px;
+        font-weight: 800;
+      }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-
 # ----------------------------
-# Header with logo beside title (small)
+# Header card with logo beside title
 # ----------------------------
-st.markdown('<div class="header-card">', unsafe_allow_html=True)
-col1, col2 = st.columns([1, 5], vertical_alignment="center")
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
-with col1:
-    # Logo file must be in repo root with this exact name:
-    # monofer_logo.png.jpg
-    st.image("monofer_logo.png.jpg", width=56)
+col_logo, col_text = st.columns([1, 6], vertical_alignment="center")
 
-with col2:
+with col_logo:
+    # IMPORTANT: exact filename + exact capitalization
+    try:
+        st.image("Monofer_logo.png.jpg", width=55)
+    except Exception:
+        st.write("")
+
+with col_text:
     st.markdown(
         """
-        <div class="header-wrap">
+        <div class="header-row">
           <div>
             <p class="brand-title">Monofer Dose Calculator</p>
-            <p class="brand-subtitle">IV Iron dosing support • simple & fast</p>
+            <div class="brand-subtitle">IV Iron dosing support • simple & fast</div>
           </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-st.markdown("</div>", unsafe_allow_html=True)
 
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------------------
-# Inputs
+# Inputs card
 # ----------------------------
 st.markdown('<div class="card">', unsafe_allow_html=True)
-st.markdown('<div class="section-title">🧾 Patient Inputs <span class="pill">Quick Entry</span></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">Patient Inputs <span class="badge">Clinical tool</span></div>', unsafe_allow_html=True)
 
 weight = st.number_input(
     "Body weight (kg)",
-    min_value=30.0,
+    min_value=50.0,
     max_value=250.0,
     value=70.0,
     step=0.5
@@ -186,63 +174,78 @@ hb_category = st.radio(
     horizontal=False
 )
 
-st.markdown("</div>", unsafe_allow_html=True)
+calculate = st.button("Calculate dose")
 
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------------------
-# Calculation (same logic you used)
+# Calculation logic (same as yours)
 # ----------------------------
-def total_iron(weight_kg: float, hb_cat: str) -> int:
+def total_iron(weight_val: float, hb_cat: str) -> int:
     if hb_cat == "Hb ≥ 10 g/dL":
-        return 1000 if weight_kg < 70 else 1500
-    else:
-        return 1500 if weight_kg < 70 else 2000
+        return 1000 if weight_val < 70 else 1500
+    return 1500 if weight_val < 70 else 2000
 
+# Keep results stable between reruns
+if "results" not in st.session_state:
+    st.session_state.results = None
 
-# Loading animation (pharma feel)
-st.markdown(
-    """
-    <div class="loader-wrap">
-      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-      <div class="loading-text">Calculating dose…</div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-time.sleep(0.35)
+if calculate:
+    # Loading animation (spinner + top moving bar)
+    st.markdown('<div class="top-loader"><div></div></div>', unsafe_allow_html=True)
+    with st.spinner("Calculating…"):
+        time.sleep(0.6)
 
-total = total_iron(weight, hb_category)
-first_dose = min(weight * 20, total)   # 20 mg/kg, max total
-second_dose = total - first_dose
+    total = total_iron(weight, hb_category)
+    first_dose = min(weight * 20, total)
+    second_dose = total - first_dose
 
+    st.session_state.results = (total, first_dose, second_dose)
 
 # ----------------------------
-# Results
+# Results card
 # ----------------------------
 st.markdown('<div class="card">', unsafe_allow_html=True)
-st.markdown('<div class="section-title">📋 Results <span class="pill">mg</span></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title">Results <span class="badge">mg</span></div>', unsafe_allow_html=True)
 
-st.markdown(
-    f"""
-    <div class="result-grid">
-      <div class="result-item">
-        <p class="result-label">Total Iron Need</p>
-        <p class="result-value">{int(total)} mg</p>
-      </div>
-      <div class="result-item">
-        <p class="result-label">First Dose</p>
-        <p class="result-value">{first_dose:.1f} mg</p>
-      </div>
-      <div class="result-item">
-        <p class="result-label">Second Dose</p>
-        <p class="result-value">{second_dose:.1f} mg</p>
-      </div>
-    </div>
-    <div class="note">
-      Note: Validate dosing with local protocol / prescribing information.
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+if st.session_state.results is None:
+    st.info("Enter patient details and press **Calculate dose**.")
+else:
+    total, first_dose, second_dose = st.session_state.results
 
-st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="result-grid">
+          <div class="result-item">
+            <div class="result-left">
+              <div class="chip">Σ</div>
+              <p class="result-label">Total Iron Need</p>
+            </div>
+            <p class="result-value">{int(total)} <span style="font-size:16px;font-weight:800;color:rgba(15,23,42,0.70)">mg</span></p>
+          </div>
+
+          <div class="result-item">
+            <div class="result-left">
+              <div class="chip">1</div>
+              <p class="result-label">First Dose</p>
+            </div>
+            <p class="result-value">{first_dose:.1f} <span style="font-size:16px;font-weight:800;color:rgba(15,23,42,0.70)">mg</span></p>
+          </div>
+
+          <div class="result-item">
+            <div class="result-left">
+              <div class="chip">2</div>
+              <p class="result-label">Second Dose</p>
+            </div>
+            <p class="result-value">{second_dose:.1f} <span style="font-size:16px;font-weight:800;color:rgba(15,23,42,0.70)">mg</span></p>
+          </div>
+        </div>
+
+        <div class="note">
+          Note: Validate dosing with local protocol / prescribing information.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+st.markdown('</div>', unsafe_allow_html=True)
