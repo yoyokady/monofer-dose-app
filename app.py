@@ -4,6 +4,20 @@ import streamlit as st
 # Page settings
 # ----------------------------
 st.set_page_config(
+    # Logo + Title Header
+col1, col2 = st.columns([1, 5])
+
+with col1:
+    st.image("monofer_logo.png.jpg", width=70)
+
+with col2:
+    st.markdown(
+        """
+        <h2 style='margin-bottom:0;'>Monofer Dose Calculator</h2>
+        <p style='margin-top:0; color:grey;'>IV Iron dosing support • simple & fast</p>
+        """,
+        unsafe_allow_html=True
+    )
     page_title="Monofer Dose Calculator",
     page_icon="💉",
     layout="centered",
