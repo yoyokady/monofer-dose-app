@@ -8,14 +8,6 @@ st.set_page_config(
     page_icon="💉",
     layout="centered",
 )
-col1, col2 = st.columns([1,5])
-
-with col1:
-    st.image("monofer_logo.png.jpg", width=80)
-
-with col2:
-    st.title("Monofer Dose Calculator")
-st.image("monofer_logo.png.jpg", width=180)
 
 # ----------------------------
 # Custom CSS (design only)
