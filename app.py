@@ -8,7 +8,7 @@ st.set_page_config(
     page_icon="💉",
     layout="centered",
 )
-monofer_logo.png
+st.image("monofer_logo.png.jpg", width=180)
 
 # ----------------------------
 # Custom CSS (design only)
